@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib.pyplot as plt
 from qft import qft
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
@@ -16,8 +18,15 @@ def run_qft(n, input_state):
      # Append the QFT operation to the circuit
     qc.append(qft(n), range(n))
     sv = Statevector(qc)
+    amplitudes = sv.data
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+    axes[0].bar(range(2**n), np.abs(amplitudes))
+    axes[0].set_title("Amplitudes")
+    axes[1].bar(range(2**n), np.angle(amplitudes))
+    
+    plt.tight_layout()
+    plt.savefig("qft_output.png")
+    plt.show()
     print(sv)
     return qc 
 
-circuit = run_qft(3,5)
-print(circuit.decompose().draw())
